@@ -1,17 +1,28 @@
-from exceptions import PathOccupied
-from _types import HttpMethod, ContentType
+from flash.components.exceptions import PathOccupied
+from flash.types import HttpMethod, ContentType
 from typing import Callable
-from pydantic import BaseModel, constr
+from dataclasses import dataclass
 
 
-class ViewData(BaseModel):
-    path: constr(min_length=1)
+@dataclass
+class ViewData:
+    path: str
     content_type: ContentType
     http_method: HttpMethod
     callback: Callable
 
+    def __post_init__(self):
+        if not self.path or not isinstance(self.path, str):
+            raise ValueError("Path must be a non-empty string")
+        if not isinstance(self.content_type, ContentType):
+            raise ValueError("Invalid content type")
+        if not isinstance(self.http_method, HttpMethod):
+            raise ValueError("Invalid HTTP method")
+        if not callable(self.callback):
+            raise ValueError("Callback must be callable")
 
-class ViewKeeper:
+
+class Views:
     def __init__(self):
         self.registered_views: dict[str, ViewData] = dict()  # path : data
 

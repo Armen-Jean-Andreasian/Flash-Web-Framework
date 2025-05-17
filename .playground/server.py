@@ -1,25 +1,14 @@
-# Flash Web Framework
-
-A lightweight web framework, similar to Flask or Bottle, designed to demonstrate how to build your own web framework. 
-
-
----
-## Example Usage
-
-This example demonstrates how to create routes, handle HTTP methods, and serve content using the `FlashFramework`.
-
-
-```python
 import random
-from flash import FlashFramework
+from flash import Flash
 from flash import HttpMethod, ContentType
+from flash import render_html, render_json
 
-app = FlashFramework()
+app = Flash()
 
 
 @app.route(path="/", content_type=ContentType.HTML, method=HttpMethod.GET)
 def home():
-    return "<h1>Welcome to FlashFramework!</h1>"
+    return f"<h1>Welcome to Flash!</h1> <br> Visit {app.running_on + '/info'} to see available paths"
 
 
 @app.route("/about", content_type=ContentType.HTML, method=HttpMethod.GET)
@@ -37,12 +26,15 @@ def data():
     return {random.randint(1, 100): random.randint(1, 200)}
 
 
+@app.route(path='/some_html', content_type=ContentType.HTML, method=HttpMethod.GET)
+def my_html():
+    return render_html('templates/asd.html')
+
+
+@app.route(path='/some_json', content_type=ContentType.JSON, method=HttpMethod.GET)
+def my_json():
+    return render_json('files/file.json')
+
+
 if __name__ == "__main__":
     app.run("127.0.0.1", 8080)
-```
-
----
-## License
-
-- Author: Armen-Jean Andreasian
-- License: MIT
